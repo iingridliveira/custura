@@ -1,0 +1,564 @@
+<title>Caderno de Ateliê</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;500;700&family=Barlow+Condensed:wght@500;600;700&display=swap">
+<style>
+:root {
+  --chao: #E9ECEF;
+  --papel: #F7F8FA;
+  --linha: #1F2B3D;
+  --linha-2: #56627A;
+  --risco: #CDD3DC;
+  --realce: #DFE6F2;
+  --fita: #F2C12E;
+  --fita-escura: #E3AE17;
+  --fita-tinta: #2A2410;
+  --giz: #3D63A8;
+  --giz-tinta: #FFFFFF;
+  --alfinete: #C0392B;
+  --aviso: #A85F00;
+  --pronto: #2F7D4F;
+  --fonte-ui: "Atkinson Hyperlegible Next", "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --fonte-num: "Barlow Condensed", "Roboto Condensed", "Arial Narrow", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --chao: #10161F; --papel: #18212E; --linha: #E6EAF0; --linha-2: #9AA6B8;
+    --risco: #2C3749; --realce: #22324A; --fita: #E8B923; --fita-escura: #D2A312;
+    --giz: #8DB0EA; --giz-tinta: #0E1624; --alfinete: #F0776A; --aviso: #F0A640; --pronto: #6CC28E;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --chao: #10161F; --papel: #18212E; --linha: #E6EAF0; --linha-2: #9AA6B8;
+  --risco: #2C3749; --realce: #22324A; --fita: #E8B923; --fita-escura: #D2A312;
+  --giz: #8DB0EA; --giz-tinta: #0E1624; --alfinete: #F0776A; --aviso: #F0A640; --pronto: #6CC28E;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--chao);
+  color: var(--linha);
+  font-family: var(--fonte-ui);
+  font-size: 15px;
+  line-height: 1.5;
+  padding-inline: 16px;
+  padding-block: 20px 48px;
+}
+.app { max-width: 1180px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--giz); outline-offset: 2px; }
+h1, h2, h3 { margin: 0; text-wrap: balance; }
+
+/* Cabeçalho */
+.topo { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.marca { font-family: var(--fonte-num); font-weight: 700; font-size: 30px; line-height: 1; letter-spacing: .01em; }
+.resumo { margin: 4px 0 0; color: var(--linha-2); }
+.resumo strong { color: var(--linha); font-weight: 700; }
+
+.botao {
+  display: inline-flex; align-items: center; gap: 6px;
+  border: 1px solid var(--risco); background: var(--papel);
+  padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: 500;
+}
+.botao:hover { border-color: var(--linha-2); }
+.botao-forte { background: var(--linha); color: var(--papel); border-color: var(--linha); }
+.botao-forte:hover { border-color: var(--linha); opacity: .9; }
+.botao-giz { background: var(--giz); color: var(--giz-tinta); border-color: var(--giz); }
+.botao-giz:hover { border-color: var(--giz); opacity: .9; }
+.botao-texto { border: 0; background: none; padding: 4px 2px; color: var(--giz); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+
+/* Fita métrica */
+.prazos { display: flex; flex-direction: column; gap: 8px; }
+.prazos-legenda { margin: 0; color: var(--linha-2); font-size: 14px; }
+.fita-rolagem { overflow-x: auto; padding-bottom: 6px; scrollbar-width: thin; }
+.fita-regua { position: relative; --dia: 46px; }
+.alfinetes { position: relative; height: 78px; }
+.fita {
+  display: flex; background: var(--fita); color: var(--fita-tinta);
+  border-radius: 3px; box-shadow: inset 0 -2px 0 rgba(0,0,0,.08);
+}
+.dia {
+  flex: 0 0 var(--dia); height: 58px; position: relative;
+  border-left: 1.5px solid var(--fita-tinta);
+  background-image:
+    linear-gradient(var(--fita-tinta), var(--fita-tinta)),
+    repeating-linear-gradient(90deg, transparent 0 calc(var(--dia) / 10 - 1px), color-mix(in srgb, var(--fita-tinta) 70%, transparent) calc(var(--dia) / 10 - 1px) calc(var(--dia) / 10));
+  background-size: 1px 16px, 100% 9px;
+  background-position: calc(var(--dia) / 2) 0, 0 0;
+  background-repeat: no-repeat;
+  font-variant-numeric: tabular-nums;
+}
+.dia-fds { background-color: var(--fita-escura); }
+.dia-num { position: absolute; left: 5px; bottom: 16px; font-family: var(--fonte-num); font-weight: 600; font-size: 21px; line-height: 1; }
+.dia-sem { position: absolute; left: 5px; bottom: 3px; font-size: 11px; line-height: 1; opacity: .75; }
+.dia-mes { position: absolute; right: 4px; bottom: 3px; font-size: 11px; line-height: 1; font-weight: 700; }
+.dia-hoje .dia-num { color: var(--alfinete); }
+.marca-hoje {
+  position: absolute; bottom: 0; transform: translateX(-50%);
+  font-size: 12px; font-weight: 700; color: var(--alfinete); white-space: nowrap;
+}
+.marca-hoje::after { content: ""; display: block; width: 2px; height: 10px; margin: 2px auto 0; background: var(--alfinete); }
+.alfinete {
+  position: absolute; bottom: -4px; width: 22px; transform: translateX(-50%);
+  border: 0; background: none; padding: 0; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center;
+}
+.alfinete-cabeca {
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--cor, var(--linha)); border: 2px solid var(--papel);
+  box-shadow: 0 1px 2px rgba(0,0,0,.25);
+}
+.alfinete-agulha { width: 2px; background: linear-gradient(var(--linha-2), color-mix(in srgb, var(--linha-2) 40%, transparent)); }
+.alfinete[aria-pressed="true"] .alfinete-cabeca { box-shadow: 0 0 0 3px var(--giz); transform: scale(1.15); }
+.alfinete:hover .alfinete-cabeca { transform: scale(1.15); }
+.alfinete:focus-visible { outline: none; }
+.alfinete:focus-visible .alfinete-cabeca { box-shadow: 0 0 0 3px var(--giz); }
+
+/* Área de trabalho */
+.mesa { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 20px; align-items: start; }
+@media (max-width: 860px) { .mesa { grid-template-columns: minmax(0, 1fr); } }
+
+.fila { display: flex; flex-direction: column; gap: 12px; }
+.fila-titulo, .painel-sub { font-family: var(--fonte-num); font-weight: 600; font-size: 22px; line-height: 1.1; }
+.filtros { display: flex; flex-wrap: wrap; gap: 6px; }
+.filtro {
+  border: 1px solid var(--risco); background: transparent; border-radius: 999px;
+  padding: 4px 12px; cursor: pointer; font-size: 14px;
+}
+.filtro[aria-pressed="true"] { background: var(--linha); color: var(--papel); border-color: var(--linha); }
+.filtro-n { font-variant-numeric: tabular-nums; opacity: .7; margin-left: 4px; }
+
+.lista { list-style: none; margin: 0; padding: 0; background: var(--papel); border: 1px solid var(--risco); border-radius: 8px; overflow: hidden; }
+.lista-vazia { padding: 24px 16px; color: var(--linha-2); }
+.item + .item { border-top: 1px solid var(--risco); }
+.item-botao {
+  width: 100%; text-align: left; border: 0; background: none; cursor: pointer;
+  display: grid; grid-template-columns: 4px minmax(0, 1fr) auto; gap: 4px 12px;
+  padding: 12px 14px 12px 0;
+}
+.item-botao:hover { background: color-mix(in srgb, var(--realce) 55%, transparent); }
+.item-botao[aria-current="true"] { background: var(--realce); }
+.item-faixa { grid-row: 1 / span 2; background: var(--cor, transparent); border-radius: 0 2px 2px 0; }
+.item-peca { font-weight: 700; overflow-wrap: anywhere; }
+.item-cliente { grid-column: 2; color: var(--linha-2); font-size: 14px; }
+.item-prazo { grid-column: 3; grid-row: 1; text-align: right; font-size: 14px; white-space: nowrap; color: var(--cor-texto, var(--linha-2)); font-weight: 500; }
+.item-status { grid-column: 3; grid-row: 2; justify-self: end; }
+
+.pill {
+  display: inline-block; font-size: 12px; font-weight: 500; line-height: 1;
+  padding: 4px 8px; border-radius: 999px; border: 1px solid var(--risco); color: var(--linha-2); white-space: nowrap;
+}
+.pill-pronto { border-color: var(--pronto); color: var(--pronto); }
+.pill-entregue { background: var(--risco); border-color: var(--risco); color: var(--linha); }
+
+/* Painel */
+.painel { background: var(--papel); border: 1px solid var(--risco); border-radius: 8px; padding: 22px; display: flex; flex-direction: column; gap: 22px; }
+@media (max-width: 480px) { .painel { padding: 16px; } }
+.painel-cabeca { display: flex; flex-direction: column; gap: 6px; }
+.painel-peca { font-family: var(--fonte-num); font-weight: 700; font-size: 34px; line-height: 1.05; }
+.painel-cliente { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; color: var(--linha-2); }
+.painel-cliente strong { color: var(--linha); }
+.tel { font-variant-numeric: tabular-nums; user-select: all; }
+
+.etapas { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; counter-reset: etapa; }
+.etapa { display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: var(--linha-2); }
+.etapa::before { content: ""; height: 6px; border-radius: 3px; background: var(--risco); }
+.etapa-feita::before { background: var(--linha-2); }
+.etapa-atual { color: var(--linha); font-weight: 700; }
+.etapa-atual::before { background: var(--giz); }
+.acoes { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+
+.dados { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 14px 20px; margin: 0; }
+.dados div { display: flex; flex-direction: column; gap: 2px; }
+.dados dt { font-size: 13px; color: var(--linha-2); }
+.dados dd { margin: 0; font-weight: 500; font-variant-numeric: tabular-nums; }
+.dados .atrasado { color: var(--alfinete); }
+
+.medidas-cabeca { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 12px; }
+.medidas-data { font-size: 13px; color: var(--linha-2); }
+.medidas { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 0 20px; margin-top: 10px; }
+.medida { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding: 8px 0; border-bottom: 1px dashed var(--risco); }
+.medida label { font-size: 14px; color: var(--linha-2); }
+.medida-valor { display: flex; align-items: baseline; gap: 3px; }
+.medida input {
+  width: 4.2ch; border: 0; background: transparent; text-align: right; padding: 0;
+  font-family: var(--fonte-num); font-weight: 600; font-size: 22px; line-height: 1; font-variant-numeric: tabular-nums;
+  -moz-appearance: textfield;
+}
+.medida input::-webkit-outer-spin-button, .medida input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.medida input:hover { background: var(--realce); }
+.medida-un { font-size: 12px; color: var(--linha-2); }
+
+.campo { display: flex; flex-direction: column; gap: 4px; }
+.campo label, .campo legend { font-size: 13px; color: var(--linha-2); }
+.campo input, .campo select, .campo textarea {
+  border: 1px solid var(--risco); background: var(--chao); border-radius: 6px; padding: 8px 10px; width: 100%;
+}
+.campo textarea { min-height: 72px; resize: vertical; }
+.checagem { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.checagem input { width: 18px; height: 18px; accent-color: var(--giz); }
+.form-grade { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
+.form-grade .largo { grid-column: 1 / -1; }
+.erro { color: var(--alfinete); font-size: 14px; margin: 0; }
+
+.rodape { color: var(--linha-2); font-size: 13px; display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: center; }
+
+.aviso-toast {
+  position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%);
+  background: var(--linha); color: var(--papel); padding: 10px 16px; border-radius: 6px; font-weight: 500;
+  box-shadow: 0 6px 20px rgba(0,0,0,.2); max-width: calc(100% - 32px);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .alfinete-cabeca { transition: transform .15s ease, box-shadow .15s ease; }
+  .aviso-toast { animation: sobe .2s ease-out; }
+  @keyframes sobe { from { transform: translate(-50%, 8px); opacity: 0; } }
+}
+</style>
+
+<div class="app">
+  <header class="topo">
+    <div>
+      <h1 class="marca">Caderno de Ateliê</h1>
+      <p class="resumo" id="resumo"></p>
+    </div>
+    <button class="botao botao-forte" id="novo" type="button">+ Novo pedido</button>
+  </header>
+
+  <section class="prazos" aria-labelledby="prazos-titulo">
+    <h2 class="prazos-legenda" id="prazos-titulo">Entregas das próximas quatro semanas. Cada alfinete é um pedido; toque para abrir.</h2>
+    <div class="fita-rolagem" id="fita-rolagem" tabindex="0" aria-label="Fita de prazos">
+      <div class="fita-regua" id="regua">
+        <div class="alfinetes" id="alfinetes"></div>
+        <div class="fita" id="fita"></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="mesa">
+    <section class="fila" aria-labelledby="fila-titulo">
+      <h2 class="fila-titulo" id="fila-titulo">Pedidos</h2>
+      <div class="filtros" id="filtros" role="group" aria-label="Filtrar por etapa"></div>
+      <ul class="lista" id="lista"></ul>
+    </section>
+    <section class="painel" id="painel" aria-live="polite"></section>
+  </div>
+
+  <footer class="rodape">
+    <span>Os pedidos ficam salvos só neste navegador.</span>
+    <button class="botao-texto" id="restaurar" type="button">Voltar aos pedidos de exemplo</button>
+  </footer>
+</div>
+<div class="aviso-toast" id="toast" role="status" hidden></div>
+
+<script>
+(function () {
+  const ETAPAS = ["Na fila", "Costurando", "Na prova", "Pronto", "Entregue"];
+  const MEDIDAS = [
+    ["busto", "Busto"], ["cintura", "Cintura"], ["quadril", "Quadril"],
+    ["ombro", "Ombro a ombro"], ["manga", "Manga"], ["comprimento", "Comprimento"],
+    ["gancho", "Gancho"], ["coxa", "Coxa"]
+  ];
+  const SERVICOS = ["Ajuste", "Conserto", "Sob medida", "Reforma"];
+  const CHAVE = "caderno-atelie-v1";
+  const DIAS_ANTES = 3, DIAS_TOTAL = 31;
+  const SEMANA = ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"];
+  const MESES = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
+
+  const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
+  const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  const lerData = s => { const [a, m, d] = s.split("-").map(Number); return new Date(a, m - 1, d); };
+  const somaDias = n => { const d = new Date(hoje); d.setDate(d.getDate() + n); return iso(d); };
+  const diasAte = s => Math.round((lerData(s) - hoje) / 864e5);
+  const reais = v => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  const dataCurta = s => { const d = lerData(s); return `${SEMANA[d.getDay()]}, ${d.getDate()} ${MESES[d.getMonth()]}`; };
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const novoId = p => p + Math.random().toString(36).slice(2, 8);
+
+  function exemplo() {
+    const c = [
+      { id: "c1", nome: "Juliana Freitas", tel: "(21) 98812-4471", medidasEm: somaDias(-12), medidas: { busto: 92, cintura: 74, quadril: 101, ombro: 38, manga: 58, comprimento: 142 } },
+      { id: "c2", nome: "Rafael Costa", tel: "(21) 99650-2208", medidasEm: somaDias(-6), medidas: { ombro: 46, manga: 63.5, cintura: 88, gancho: 27, comprimento: 104 } },
+      { id: "c3", nome: "Marlene Araújo", tel: "(21) 3342-1187", medidasEm: somaDias(-40), medidas: { cintura: 86, quadril: 108, comprimento: 98 } },
+      { id: "c4", nome: "Ana Paula Rocha", tel: "(21) 97431-0056", medidasEm: "", medidas: {} },
+      { id: "c5", nome: "Beatriz Lima", tel: "(21) 98127-9930", medidasEm: somaDias(-3), medidas: { busto: 70, cintura: 62, quadril: 76, comprimento: 54 } },
+      { id: "c6", nome: "Cláudia Souza", tel: "(21) 99204-6612", medidasEm: "", medidas: {} },
+      { id: "c7", nome: "Tereza Nascimento", tel: "(21) 98866-3140", medidasEm: somaDias(-2), medidas: { cintura: 79, quadril: 104 } }
+    ];
+    const p = [
+      { id: "p1", clienteId: "c4", peca: "Troca de zíper da jaqueta", servico: "Conserto", etapa: 1, prazo: somaDias(-1), valor: 45, pago: false, notas: "Zíper destacável de 60 cm, cor preta. Ela já trouxe o zíper." },
+      { id: "p2", clienteId: "c3", peca: "Barra de duas calças jeans", servico: "Ajuste", etapa: 3, prazo: somaDias(0), valor: 50, pago: false, notas: "Manter a barra original." },
+      { id: "p3", clienteId: "c2", peca: "Terno: manga e bainha", servico: "Ajuste", etapa: 1, prazo: somaDias(2), valor: 120, pago: true, notas: "Casamento no sábado. Encurtar manga 2 cm." },
+      { id: "p4", clienteId: "c7", peca: "Saia plissada: cintura", servico: "Ajuste", etapa: 0, prazo: somaDias(3), valor: 40, pago: false, notas: "" },
+      { id: "p5", clienteId: "c1", peca: "Vestido de madrinha", servico: "Sob medida", etapa: 2, prazo: somaDias(4), valor: 480, pago: false, notas: "Crepe verde-oliva. Sinal de R$ 200 já recebido. Segunda prova para conferir a pence do busto." },
+      { id: "p6", clienteId: "c5", peca: "Uniforme escolar, 3 peças", servico: "Sob medida", etapa: 0, prazo: somaDias(9), valor: 210, pago: false, notas: "Tecido da escola, entregue pela mãe." },
+      { id: "p7", clienteId: "c1", peca: "Bolero de renda", servico: "Sob medida", etapa: 0, prazo: somaDias(11), valor: 150, pago: false, notas: "Mesma renda do vestido." },
+      { id: "p8", clienteId: "c6", peca: "Cortinas de linho da sala", servico: "Sob medida", etapa: 0, prazo: somaDias(16), valor: 360, pago: false, notas: "Duas folhas de 1,40 × 2,60 m, com ilhós." },
+      { id: "p9", clienteId: "c3", peca: "Reforma de vestido de festa", servico: "Reforma", etapa: 4, prazo: somaDias(-5), valor: 90, pago: true, notas: "" }
+    ];
+    return { clientes: c, pedidos: p };
+  }
+
+  let dados;
+  try { dados = JSON.parse(localStorage.getItem(CHAVE)); } catch (e) { dados = null; }
+  if (!dados || !Array.isArray(dados.pedidos)) dados = exemplo();
+  let filtro = "abertos";
+  let selecionado = (dados.pedidos.find(p => p.id === "p5") || dados.pedidos[0] || {}).id || null;
+  let modo = "pedido";
+
+  const salvar = () => { try { localStorage.setItem(CHAVE, JSON.stringify(dados)); } catch (e) {} };
+  const cliente = id => dados.clientes.find(c => c.id === id) || { nome: "Cliente", tel: "", medidas: {} };
+  const $ = id => document.getElementById(id);
+
+  let toastTimer;
+  function avisar(msg) {
+    const t = $("toast"); t.textContent = msg; t.hidden = false;
+    clearTimeout(toastTimer); toastTimer = setTimeout(() => { t.hidden = true; }, 2600);
+  }
+
+  function urgencia(p) {
+    if (p.etapa >= 3) return { cor: "var(--pronto)", texto: "var(--pronto)" };
+    const n = diasAte(p.prazo);
+    if (n < 0) return { cor: "var(--alfinete)", texto: "var(--alfinete)" };
+    if (n <= 2) return { cor: "var(--aviso)", texto: "var(--aviso)" };
+    return { cor: "var(--linha)", texto: "var(--linha-2)" };
+  }
+  function prazoRelativo(p) {
+    const n = diasAte(p.prazo);
+    if (p.etapa === 4) return `entregue ${dataCurta(p.prazo)}`;
+    if (n < -1) return `atrasado ${-n} dias`;
+    if (n === -1) return "atrasado 1 dia";
+    if (n === 0) return "hoje";
+    if (n === 1) return "amanhã";
+    if (n < 7) return `em ${n} dias`;
+    return dataCurta(p.prazo);
+  }
+
+  function renderResumo() {
+    const abertos = dados.pedidos.filter(p => p.etapa < 4);
+    const semana = abertos.filter(p => p.etapa < 3 && diasAte(p.prazo) <= 7).length;
+    const atrasados = abertos.filter(p => p.etapa < 3 && diasAte(p.prazo) < 0).length;
+    const receber = abertos.filter(p => !p.pago).reduce((s, p) => s + (+p.valor || 0), 0);
+    const partes = [`<strong>${semana}</strong> ${semana === 1 ? "entrega" : "entregas"} nos próximos 7 dias`];
+    if (atrasados) partes.push(`<strong>${atrasados}</strong> ${atrasados === 1 ? "atrasada" : "atrasadas"}`);
+    $("resumo").innerHTML = `${partes.join(", ")}. A receber: <strong>${reais(receber)}</strong>.`;
+  }
+
+  function renderFita() {
+    const fita = $("fita"), alf = $("alfinetes");
+    let html = "";
+    for (let i = 0; i < DIAS_TOTAL; i++) {
+      const d = lerData(somaDias(i - DIAS_ANTES));
+      const fds = d.getDay() === 0 || d.getDay() === 6;
+      const mes = d.getDate() === 1 || i === 0 ? `<span class="dia-mes">${MESES[d.getMonth()]}</span>` : "";
+      html += `<div class="dia${fds ? " dia-fds" : ""}${i === DIAS_ANTES ? " dia-hoje" : ""}"><span class="dia-num">${d.getDate()}</span><span class="dia-sem">${SEMANA[d.getDay()]}</span>${mes}</div>`;
+    }
+    fita.innerHTML = html;
+    const largura = 46;
+    $("regua").style.width = `${DIAS_TOTAL * largura}px`;
+
+    const porDia = {};
+    let pins = `<span class="marca-hoje" style="left:${DIAS_ANTES * largura + largura / 2}px">hoje</span>`;
+    dados.pedidos
+      .filter(p => p.etapa < 4)
+      .sort((a, b) => a.prazo.localeCompare(b.prazo))
+      .forEach(p => {
+        const idx = Math.max(0, Math.min(DIAS_TOTAL - 1, diasAte(p.prazo) + DIAS_ANTES));
+        const pilha = porDia[idx] = (porDia[idx] || 0) + 1;
+        const cli = cliente(p.clienteId);
+        const agulha = 22 + (pilha - 1) * 20;
+        pins += `<button type="button" class="alfinete" data-id="${p.id}" aria-pressed="${p.id === selecionado}" style="left:${idx * largura + largura / 2 + (pilha - 1) * 5}px;--cor:${urgencia(p).cor}" aria-label="${esc(p.peca)}, ${esc(cli.nome)}, ${esc(prazoRelativo(p))}" title="${esc(p.peca)} (${esc(cli.nome)})"><span class="alfinete-cabeca"></span><span class="alfinete-agulha" style="height:${agulha}px"></span></button>`;
+      });
+    alf.innerHTML = pins;
+  }
+
+  function renderFiltros() {
+    const conta = e => dados.pedidos.filter(p => p.etapa === e).length;
+    const ops = [["abertos", "Em aberto", dados.pedidos.filter(p => p.etapa < 4).length]]
+      .concat(ETAPAS.map((n, i) => [String(i), n, conta(i)]));
+    $("filtros").innerHTML = ops.map(([v, n, c]) =>
+      `<button type="button" class="filtro" data-filtro="${v}" aria-pressed="${filtro === v}">${n}<span class="filtro-n">${c}</span></button>`).join("");
+  }
+
+  function renderLista() {
+    const itens = dados.pedidos
+      .filter(p => filtro === "abertos" ? p.etapa < 4 : p.etapa === +filtro)
+      .sort((a, b) => filtro === "4" ? b.prazo.localeCompare(a.prazo) : a.prazo.localeCompare(b.prazo));
+    if (!itens.length) {
+      $("lista").innerHTML = `<li class="lista-vazia">Nenhum pedido nesta etapa. Escolha outra etapa acima ou crie um novo pedido.</li>`;
+      return;
+    }
+    $("lista").innerHTML = itens.map(p => {
+      const u = urgencia(p), cli = cliente(p.clienteId);
+      const pill = p.etapa === 3 ? "pill pill-pronto" : p.etapa === 4 ? "pill pill-entregue" : "pill";
+      return `<li class="item"><button type="button" class="item-botao" data-id="${p.id}" aria-current="${p.id === selecionado && modo === "pedido"}" style="--cor:${u.cor};--cor-texto:${u.texto}">
+        <span class="item-faixa"></span>
+        <span class="item-peca">${esc(p.peca)}</span>
+        <span class="item-prazo">${esc(prazoRelativo(p))}</span>
+        <span class="item-cliente">${esc(cli.nome)}</span>
+        <span class="item-status"><span class="${pill}">${ETAPAS[p.etapa]}</span></span>
+      </button></li>`;
+    }).join("");
+  }
+
+  function renderPedido() {
+    const p = dados.pedidos.find(x => x.id === selecionado);
+    if (!p) {
+      $("painel").innerHTML = `<p class="lista-vazia">Escolha um pedido na lista ou num alfinete da fita para ver os detalhes.</p>`;
+      return;
+    }
+    const cli = cliente(p.clienteId);
+    const n = diasAte(p.prazo);
+    const etapas = ETAPAS.map((e, i) => `<li class="etapa${i < p.etapa ? " etapa-feita" : ""}${i === p.etapa ? " etapa-atual" : ""}"${i === p.etapa ? ' aria-current="step"' : ""}>${e}</li>`).join("");
+    const proxima = p.etapa < 4 ? `<button type="button" class="botao botao-giz" id="avancar">Mover para ${ETAPAS[p.etapa + 1]}</button>` : "";
+    const voltar = p.etapa > 0 ? `<button type="button" class="botao-texto" id="recuar">Voltar para ${ETAPAS[p.etapa - 1]}</button>` : "";
+    const primeiroNome = cli.nome.split(" ")[0];
+    const medidas = MEDIDAS.map(([k, rot]) => `<div class="medida"><label for="med-${k}">${rot}</label><span class="medida-valor"><input id="med-${k}" data-medida="${k}" type="number" inputmode="decimal" step="0.5" min="0" value="${cli.medidas?.[k] ?? ""}" placeholder="—"><span class="medida-un">cm</span></span></div>`).join("");
+    const medidasEm = cli.medidasEm ? `Tiradas em ${dataCurta(cli.medidasEm)}` : "Ainda sem medidas";
+
+    $("painel").innerHTML = `
+      <div class="painel-cabeca">
+        <h2 class="painel-peca">${esc(p.peca)}</h2>
+        <div class="painel-cliente"><strong>${esc(cli.nome)}</strong>${cli.tel ? `<span class="tel">${esc(cli.tel)}</span><button type="button" class="botao-texto" id="copiar">Copiar telefone</button>` : ""}</div>
+      </div>
+      <div>
+        <ol class="etapas" aria-label="Etapa do pedido">${etapas}</ol>
+      </div>
+      <div class="acoes">${proxima}${voltar}</div>
+      <dl class="dados">
+        <div><dt>Entrega</dt><dd class="${n < 0 && p.etapa < 3 ? "atrasado" : ""}">${dataCurta(p.prazo)} (${esc(prazoRelativo(p))})</dd></div>
+        <div><dt>Serviço</dt><dd>${esc(p.servico)}</dd></div>
+        <div><dt>Valor</dt><dd>${reais(+p.valor || 0)}</dd></div>
+        <div><dt>Pagamento</dt><dd><label class="checagem"><input type="checkbox" id="pago" ${p.pago ? "checked" : ""}> ${p.pago ? "Pago" : "A receber"}</label></dd></div>
+      </dl>
+      <div class="campo">
+        <label for="notas">Anotações do pedido</label>
+        <textarea id="notas" placeholder="Tecido, aviamentos, o que combinou com a cliente">${esc(p.notas)}</textarea>
+      </div>
+      <div>
+        <div class="medidas-cabeca">
+          <h3 class="painel-sub">Medidas de ${esc(primeiroNome)}</h3>
+          <span class="medidas-data" id="medidas-data">${medidasEm}</span>
+        </div>
+        <div class="medidas">${medidas}</div>
+      </div>`;
+  }
+
+  function renderNovo(erro) {
+    const opcoes = dados.clientes.slice().sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"))
+      .map(c => `<option value="${c.id}">${esc(c.nome)}</option>`).join("");
+    $("painel").innerHTML = `
+      <div class="painel-cabeca"><h2 class="painel-peca">Novo pedido</h2></div>
+      <form id="form-novo" class="form-grade" novalidate>
+        <div class="campo largo">
+          <label for="f-cliente">Cliente</label>
+          <select id="f-cliente"><option value="nova">Cliente nova</option>${opcoes}</select>
+        </div>
+        <div class="campo" id="bloco-nome"><label for="f-nome">Nome da cliente</label><input id="f-nome" autocomplete="off"></div>
+        <div class="campo" id="bloco-tel"><label for="f-tel">Telefone</label><input id="f-tel" inputmode="tel" placeholder="(21) 90000-0000"></div>
+        <div class="campo largo"><label for="f-peca">Peça e o que fazer</label><input id="f-peca" placeholder="Ex.: Barra de calça social"></div>
+        <div class="campo"><label for="f-servico">Serviço</label><select id="f-servico">${SERVICOS.map(s => `<option>${s}</option>`).join("")}</select></div>
+        <div class="campo"><label for="f-prazo">Entrega</label><input id="f-prazo" type="date" value="${somaDias(7)}"></div>
+        <div class="campo"><label for="f-valor">Valor (R$)</label><input id="f-valor" type="number" inputmode="decimal" min="0" step="5" placeholder="0"></div>
+        <div class="campo" style="justify-content:flex-end"><label class="checagem"><input type="checkbox" id="f-pago"> Já está pago</label></div>
+        <div class="campo largo"><label for="f-notas">Anotações</label><textarea id="f-notas"></textarea></div>
+        ${erro ? `<p class="erro largo" role="alert">${erro}</p>` : ""}
+        <div class="acoes largo">
+          <button type="submit" class="botao botao-forte">Criar pedido</button>
+          <button type="button" class="botao" id="cancelar">Cancelar</button>
+        </div>
+      </form>`;
+    $("f-cliente").addEventListener("change", e => {
+      const nova = e.target.value === "nova";
+      $("bloco-nome").hidden = !nova; $("bloco-tel").hidden = !nova;
+    });
+    $("form-novo").addEventListener("submit", criar);
+    $("cancelar").addEventListener("click", () => { modo = "pedido"; tudo(); });
+    $("f-nome").focus();
+  }
+
+  function criar(e) {
+    e.preventDefault();
+    const sel = $("f-cliente").value;
+    const peca = $("f-peca").value.trim();
+    const prazo = $("f-prazo").value;
+    let clienteId = sel;
+    if (sel === "nova") {
+      const nome = $("f-nome").value.trim();
+      if (!nome) return mostrarErro("Escreva o nome da cliente.", "f-nome");
+      clienteId = novoId("c");
+      dados.clientes.push({ id: clienteId, nome, tel: $("f-tel").value.trim(), medidasEm: "", medidas: {} });
+    }
+    if (!peca) return mostrarErro("Descreva a peça e o que precisa ser feito.", "f-peca");
+    if (!prazo) return mostrarErro("Escolha a data de entrega.", "f-prazo");
+    const p = { id: novoId("p"), clienteId, peca, servico: $("f-servico").value, etapa: 0, prazo, valor: parseFloat($("f-valor").value) || 0, pago: $("f-pago").checked, notas: $("f-notas").value.trim() };
+    dados.pedidos.push(p);
+    selecionado = p.id; modo = "pedido"; filtro = "abertos";
+    salvar(); tudo(); avisar("Pedido criado");
+  }
+  function mostrarErro(msg, campo) {
+    let el = document.querySelector("#form-novo .erro");
+    if (!el) {
+      el = document.createElement("p"); el.className = "erro largo"; el.setAttribute("role", "alert");
+      $("form-novo").insertBefore(el, $("form-novo").querySelector(".acoes"));
+    }
+    el.textContent = msg; $(campo).focus();
+  }
+
+  function tudo() {
+    renderResumo(); renderFita(); renderFiltros(); renderLista();
+    modo === "novo" ? renderNovo() : renderPedido();
+  }
+
+  function abrir(id) {
+    selecionado = id; modo = "pedido";
+    renderFita(); renderLista(); renderPedido();
+    if (window.matchMedia("(max-width: 860px)").matches) $("painel").scrollIntoView({ block: "start", behavior: "smooth" });
+  }
+
+  document.addEventListener("click", e => {
+    const alvo = e.target.closest("[data-id]");
+    if (alvo) return abrir(alvo.dataset.id);
+    const f = e.target.closest("[data-filtro]");
+    if (f) { filtro = f.dataset.filtro; renderFiltros(); renderLista(); return; }
+    const p = dados.pedidos.find(x => x.id === selecionado);
+    if (e.target.id === "avancar" && p) { p.etapa++; salvar(); tudo(); avisar(`Movido para ${ETAPAS[p.etapa]}`); }
+    if (e.target.id === "recuar" && p) { p.etapa--; salvar(); tudo(); avisar(`Voltou para ${ETAPAS[p.etapa]}`); }
+    if (e.target.id === "copiar" && p) {
+      const tel = cliente(p.clienteId).tel;
+      const fallback = () => { const s = document.querySelector(".tel"); const r = document.createRange(); r.selectNodeContents(s); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); avisar("Telefone selecionado. Use Ctrl+C para copiar."); };
+      try { navigator.clipboard.writeText(tel).then(() => avisar("Telefone copiado"), fallback); } catch (err) { fallback(); }
+    }
+  });
+
+  document.addEventListener("change", e => {
+    const p = dados.pedidos.find(x => x.id === selecionado);
+    if (!p || modo !== "pedido") return;
+    if (e.target.id === "pago") { p.pago = e.target.checked; salvar(); renderResumo(); renderPedido(); avisar(p.pago ? "Marcado como pago" : "Marcado como a receber"); }
+    if (e.target.dataset.medida) {
+      const cli = cliente(p.clienteId);
+      const v = parseFloat(e.target.value);
+      cli.medidas = cli.medidas || {};
+      if (isNaN(v)) delete cli.medidas[e.target.dataset.medida]; else cli.medidas[e.target.dataset.medida] = v;
+      cli.medidasEm = iso(hoje);
+      $("medidas-data").textContent = `Tiradas em ${dataCurta(cli.medidasEm)}`;
+      salvar(); avisar("Medida salva");
+    }
+  });
+  document.addEventListener("input", e => {
+    if (e.target.id !== "notas") return;
+    const p = dados.pedidos.find(x => x.id === selecionado);
+    if (p) { p.notas = e.target.value; salvar(); }
+  });
+
+  $("novo").addEventListener("click", () => { modo = "novo"; renderLista(); renderNovo(); if (window.matchMedia("(max-width: 860px)").matches) $("painel").scrollIntoView({ block: "start" }); });
+  $("restaurar").addEventListener("click", () => {
+    dados = exemplo(); selecionado = "p5"; modo = "pedido"; filtro = "abertos";
+    salvar(); tudo(); avisar("Pedidos de exemplo restaurados");
+  });
+
+  tudo();
+  $("fita-rolagem").scrollLeft = Math.max(0, (DIAS_ANTES - 1) * 46);
+})();
+</script>
